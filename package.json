@@ -1,0 +1,45 @@
+{
+  "name": "agani-editor-js",
+  "version": "1.0.1",
+  "description": "A lightweight WYSIWYG text editor with no dependencies",
+  "main": "dist/agani-editor.min.js",
+  "style": "dist/agani-editor.min.css",
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "uglifyjs src/agani-editor.js -c -m -o dist/agani-editor.min.js",
+    "build:css": "cleancss -o dist/agani-editor.min.css src/agani-editor.css",
+    "dev": "npm run build && node server.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "wysiwyg",
+    "editor",
+    "text-editor",
+    "rich-text",
+    "javascript",
+    "vanilla-js",
+    "no-dependencies",
+    "agani-editor",
+    "contenteditable"
+  ],
+  "author": "Abdul Gani Pohan <ganipohan28@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ganipohan/agani-editor-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ganipohan/agani-editor-js/issues"
+  },
+  "homepage": "https://github.com/ganipohan/agani-editor-js#readme",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.2",
+    "uglify-js": "^3.17.4"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ]
+}

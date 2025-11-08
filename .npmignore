@@ -1,0 +1,25 @@
+# Development files
+node_modules/
+.git/
+.vscode/
+.idea/
+
+# Examples (optional, bisa di-include juga)
+examples/
+
+# Test files
+test/
+*.test.js
+
+# Config files
+.eslintrc
+.prettierrc
+tsconfig.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
