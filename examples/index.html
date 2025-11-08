@@ -3,297 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AganiEditor v2.1.0 - Complete Demo</title>
+    <title>AganiEditor v2.1.2 - Complete Demo</title>
+    
+    <!-- Load AganiEditor CSS -->
+    <link rel="stylesheet" href="../src/agani-editor.css">
+    
     <style>
-        /**
-         * AganiEditor Styles - Enhanced
-         * @version 2.1.0
-         */
-
-        /* Container */
-        .agani-editor-container {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: white;
-        }
-
-        .agani-editor-container[data-theme="dark"] {
-            background: #1e1e1e;
-            border-color: #333;
-        }
-
-        /* Color Picker */
-        .agani-editor-color-picker {
-            position: relative;
-            display: inline-block;
-        }
-
-        .agani-editor-color-input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        /* Toolbar */
-        .agani-editor-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-toolbar {
-            background: #2d2d2d;
-            border-bottom-color: #333;
-        }
-
-        /* Buttons */
-        .agani-editor-btn {
-            padding: 8px 12px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-            color: #333;
-            white-space: nowrap;
-        }
-
-        .agani-editor-btn:hover {
-            background: #e9ecef;
-            border-color: #adb5bd;
-            transform: translateY(-1px);
-        }
-
-        .agani-editor-btn:active,
-        .agani-editor-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            transform: translateY(0);
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-btn {
-            background: #3d3d3d;
-            border-color: #555;
-            color: #e0e0e0;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-btn:hover {
-            background: #4d4d4d;
-        }
-
-        /* Dropdown */
-        .agani-editor-dropdown {
-            position: relative;
-        }
-
-        .agani-editor-dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            margin-top: 4px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            min-width: 150px;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-
-        .agani-editor-dropdown-menu.show {
-            display: block;
-            animation: slideDown 0.2s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-dropdown-menu {
-            background: #2d2d2d;
-            border-color: #555;
-        }
-
-        .agani-editor-dropdown-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            color: #333;
-        }
-
-        .agani-editor-dropdown-item:hover {
-            background: #f8f9fa;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-dropdown-item {
-            color: #e0e0e0;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-dropdown-item:hover {
-            background: #3d3d3d;
-        }
-
-        /* Content Area */
-        .agani-editor-content {
-            padding: 15px;
-            outline: none;
-            overflow-y: auto;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-content {
-            color: #e0e0e0;
-        }
-
-        .agani-editor-content:empty:before {
-            content: attr(data-placeholder);
-            color: #999;
-        }
-
-        .agani-editor-content:focus {
-            background: #fafbfc;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-content:focus {
-            background: #252525;
-        }
-
-        /* Content Styles */
-        .agani-editor-content h1 {
-            font-size: 2em;
-            margin-bottom: 0.5em;
-            font-weight: 700;
-        }
-
-        .agani-editor-content h2 {
-            font-size: 1.5em;
-            margin-bottom: 0.5em;
-            font-weight: 600;
-        }
-
-        .agani-editor-content h3 {
-            font-size: 1.17em;
-            margin-bottom: 0.5em;
-            font-weight: 600;
-        }
-
-        .agani-editor-content h4 {
-            font-size: 1em;
-            margin-bottom: 0.5em;
-            font-weight: 600;
-        }
-
-        .agani-editor-content h5 {
-            font-size: 0.83em;
-            margin-bottom: 0.5em;
-            font-weight: 600;
-        }
-
-        .agani-editor-content h6 {
-            font-size: 0.67em;
-            margin-bottom: 0.5em;
-            font-weight: 600;
-        }
-
-        .agani-editor-content p {
-            margin-bottom: 1em;
-        }
-
-        .agani-editor-content ul,
-        .agani-editor-content ol {
-            margin-left: 20px;
-            margin-bottom: 1em;
-        }
-
-        .agani-editor-content a {
-            color: #667eea;
-            text-decoration: underline;
-        }
-
-        .agani-editor-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-
-        .agani-editor-content hr {
-            border: none;
-            border-top: 2px solid #ddd;
-            margin: 20px 0;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-content hr {
-            border-top-color: #555;
-        }
-
-        /* Table Styles */
-        .agani-editor-content table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 15px 0;
-        }
-
-        .agani-editor-content table td,
-        .agani-editor-content table th {
-            border: 1px solid #ddd;
-            padding: 8px;
-            min-width: 50px;
-        }
-
-        .agani-editor-content table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-content table td,
-        .agani-editor-container[data-theme="dark"] .agani-editor-content table th {
-            border-color: #555;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-content table th {
-            background: #2d2d2d;
-        }
-
-        /* Code View */
-        .agani-editor-code {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            outline: none;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            resize: vertical;
-            background: #f8f9fa;
-            color: #333;
-            display: none;
-        }
-
-        .agani-editor-container[data-theme="dark"] .agani-editor-code {
-            background: #1e1e1e;
-            color: #e0e0e0;
-        }
-
-        /* Demo Page Styles */
+        /* Demo Page Styles Only */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             max-width: 1000px;
@@ -318,6 +34,7 @@
         .header p {
             font-size: 1.2em;
             opacity: 0.9;
+            margin-top: 10px;
         }
 
         .demo-section {
@@ -332,6 +49,7 @@
             margin-top: 0;
             color: #333;
             font-size: 1.5em;
+            margin-bottom: 20px;
         }
 
         .buttons {
@@ -390,6 +108,24 @@
 
         .feature-item strong {
             color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .code-example {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-example pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         @media (max-width: 768px) {
@@ -405,42 +141,15 @@
 </head>
 <body>
     <div class="header">
-        <h1>🎨 AganiEditor v2.1.0</h1>
+        <h1>🎨 AganiEditor v2.1.2</h1>
         <p>Lightweight WYSIWYG Editor dengan Fitur Lengkap</p>
-    </div>
-    
-    <div class="demo-section">
-        <h2>✨ Fitur Baru yang Ditambahkan</h2>
-        <div class="feature-list">
-            <div class="feature-item">
-                <strong>↶↷ Undo/Redo</strong><br>
-                Dengan keyboard shortcuts Ctrl+Z / Ctrl+Shift+Z
-            </div>
-            <div class="feature-item">
-                <strong>X₂ X² Subscript/Superscript</strong><br>
-                Untuk formula dan footnotes
-            </div>
-            <div class="feature-item">
-                <strong>⊞ Insert Table</strong><br>
-                Buat tabel dengan custom rows & columns
-            </div>
-            <div class="feature-item">
-                <strong>─ Horizontal Rule</strong><br>
-                Garis pemisah horizontal
-            </div>
-            <div class="feature-item">
-                <strong>✗ Clear Formatting</strong><br>
-                Hapus semua format
-            </div>
-            <div class="feature-item">
-                <strong>H1-H6 Headings</strong><br>
-                Semua level heading lengkap
-            </div>
-        </div>
-    </div>
+    </div> 
     
     <div class="demo-section">
         <h2>📝 Editor Demo - Coba Semua Fitur!</h2>
+        <p style="color: #666; margin-bottom: 15px;">
+            Select text kemudian klik toolbar untuk melihat indikator aktif (tombol menjadi biru)
+        </p>
         <textarea id="editor1"></textarea>
         
         <div class="buttons">
@@ -457,516 +166,32 @@
         <h2>⌨️ Keyboard Shortcuts</h2>
         <div class="feature-list">
             <div class="feature-item">
-                <strong>Ctrl+Z</strong> - Undo
+                <strong>Ctrl+Z</strong> Undo
             </div>
             <div class="feature-item">
-                <strong>Ctrl+Shift+Z</strong> - Redo
+                <strong>Ctrl+Shift+Z / Ctrl+Y</strong> Redo
             </div>
             <div class="feature-item">
-                <strong>Ctrl+B</strong> - Bold
+                <strong>Ctrl+B</strong> Bold
             </div>
             <div class="feature-item">
-                <strong>Ctrl+I</strong> - Italic
+                <strong>Ctrl+I</strong> Italic
             </div>
             <div class="feature-item">
-                <strong>Ctrl+U</strong> - Underline
+                <strong>Ctrl+U</strong> Underline
             </div>
         </div>
-    </div>
+    </div> 
+    
+    <!-- Load AganiEditor JavaScript -->
+    <script src="../src/agani-editor.js"></script>
     
     <script>
-        /**
-         * AganiEditor - Enhanced Version
-         * @version 2.1.0
-         */
-        (function(window) {
-            'use strict';
-
-            function AganiEditor(selector, options) {
-                this.selector = selector;
-                this.element = document.querySelector(selector);
-                
-                if (!this.element) {
-                    console.error('AganiEditor: Element tidak ditemukan');
-                    return;
-                }
-
-                this.options = Object.assign({
-                    height: 300,
-                    placeholder: 'Mulai menulis...',
-                    toolbar: [
-                        'undo', 'redo',
-                        'bold', 'italic', 'underline', 'strikethrough',
-                        'subscript', 'superscript',
-                        'fontfamily', 'fontsize',
-                        'color', 'bgcolor',
-                        'heading', 'align', 'list',
-                        'outdent', 'indent',
-                        'link', 'image', 'table',
-                        'hr', 'removeformat', 'code'
-                    ],
-                    onChange: null,
-                    theme: 'light'
-                }, options);
-
-                this.history = [];
-                this.historyStep = -1;
-                this.init();
-            }
-
-            AganiEditor.prototype.init = function() {
-                this.createEditor();
-                this.createToolbar();
-                this.attachEvents();
-                this.hideOriginalElement();
-                this.saveHistory();
-            };
-
-            AganiEditor.prototype.createEditor = function() {
-                this.container = document.createElement('div');
-                this.container.className = 'agani-editor-container';
-                this.container.setAttribute('data-theme', this.options.theme);
-
-                this.toolbarContainer = document.createElement('div');
-                this.toolbarContainer.className = 'agani-editor-toolbar';
-
-                this.editorContent = document.createElement('div');
-                this.editorContent.className = 'agani-editor-content';
-                this.editorContent.contentEditable = true;
-                this.editorContent.setAttribute('data-placeholder', this.options.placeholder);
-                this.editorContent.style.minHeight = this.options.height + 'px';
-                this.editorContent.innerHTML = this.element.value || '';
-
-                this.container.appendChild(this.toolbarContainer);
-                this.container.appendChild(this.editorContent);
-                this.element.parentNode.insertBefore(this.container, this.element.nextSibling);
-            };
-
-            AganiEditor.prototype.createToolbar = function() {
-                const tools = {
-                    'undo': { icon: '↶', title: 'Undo', command: 'undo' },
-                    'redo': { icon: '↷', title: 'Redo', command: 'redo' },
-                    'bold': { icon: '𝐁', title: 'Bold', command: 'bold' },
-                    'italic': { icon: '𝐼', title: 'Italic', command: 'italic' },
-                    'underline': { icon: '𝐔', title: 'Underline', command: 'underline' },
-                    'strikethrough': { icon: 'S̶', title: 'Strikethrough', command: 'strikeThrough' },
-                    'subscript': { icon: 'X₂', title: 'Subscript', command: 'subscript' },
-                    'superscript': { icon: 'X²', title: 'Superscript', command: 'superscript' },
-                    'fontfamily': { icon: 'Aa', title: 'Font Family', type: 'dropdown' },
-                    'fontsize': { icon: '12', title: 'Font Size', type: 'dropdown' },
-                    'color': { icon: '🎨', title: 'Text Color', type: 'color' },
-                    'bgcolor': { icon: '◧', title: 'Background Color', type: 'color' },
-                    'heading': { icon: 'H', title: 'Heading', type: 'dropdown' },
-                    'align': { icon: '⚏', title: 'Align', type: 'dropdown' },
-                    'list': { icon: '≡', title: 'List', type: 'dropdown' },
-                    'outdent': { icon: '←', title: 'Decrease Indent', command: 'outdent' },
-                    'indent': { icon: '→', title: 'Increase Indent', command: 'indent' },
-                    'link': { icon: '🔗', title: 'Link', command: 'createLink' },
-                    'image': { icon: '🖼️', title: 'Image', command: 'insertImage' },
-                    'table': { icon: '⊞', title: 'Insert Table', type: 'custom', action: 'insertTable' },
-                    'hr': { icon: '─', title: 'Horizontal Rule', command: 'insertHorizontalRule' },
-                    'removeformat': { icon: '✗', title: 'Clear Formatting', command: 'removeFormat' },
-                    'code': { icon: '</>', title: 'Code View', type: 'toggle' }
-                };
-
-                this.options.toolbar.forEach(toolName => {
-                    const tool = tools[toolName];
-                    if (!tool) return;
-
-                    if (tool.type === 'dropdown') {
-                        this.createDropdown(toolName, tool);
-                    } else if (tool.type === 'toggle') {
-                        this.createToggleButton(toolName, tool);
-                    } else if (tool.type === 'color') {
-                        this.createColorPicker(toolName, tool);
-                    } else if (tool.type === 'custom') {
-                        this.createCustomButton(toolName, tool);
-                    } else {
-                        this.createButton(toolName, tool);
-                    }
-                });
-            };
-
-            AganiEditor.prototype.createButton = function(name, tool) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'agani-editor-btn';
-                button.setAttribute('data-command', tool.command);
-                button.title = tool.title;
-                button.innerHTML = tool.icon;
-                
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.executeCommand(tool.command);
-                });
-
-                this.toolbarContainer.appendChild(button);
-            };
-
-            AganiEditor.prototype.createCustomButton = function(name, tool) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'agani-editor-btn';
-                button.title = tool.title;
-                button.innerHTML = tool.icon;
-                
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (tool.action === 'insertTable') {
-                        this.insertTable();
-                    }
-                });
-
-                this.toolbarContainer.appendChild(button);
-            };
-
-            AganiEditor.prototype.createDropdown = function(name, tool) {
-                const dropdown = document.createElement('div');
-                dropdown.className = 'agani-editor-dropdown';
-
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'agani-editor-btn';
-                button.innerHTML = tool.icon + ' ▾';
-                button.title = tool.title;
-
-                const menu = document.createElement('div');
-                menu.className = 'agani-editor-dropdown-menu';
-
-                if (name === 'heading') {
-                    const headings = [
-                        { label: 'Heading 1', tag: 'h1' },
-                        { label: 'Heading 2', tag: 'h2' },
-                        { label: 'Heading 3', tag: 'h3' },
-                        { label: 'Heading 4', tag: 'h4' },
-                        { label: 'Heading 5', tag: 'h5' },
-                        { label: 'Heading 6', tag: 'h6' },
-                        { label: 'Paragraph', tag: 'p' }
-                    ];
-
-                    headings.forEach(h => {
-                        const item = document.createElement('div');
-                        item.className = 'agani-editor-dropdown-item';
-                        item.textContent = h.label;
-                        item.addEventListener('click', () => {
-                            this.executeCommand('formatBlock', h.tag);
-                            menu.classList.remove('show');
-                        });
-                        menu.appendChild(item);
-                    });
-                } else if (name === 'list') {
-                    const lists = [
-                        { label: 'Bullet List', command: 'insertUnorderedList' },
-                        { label: 'Numbered List', command: 'insertOrderedList' }
-                    ];
-
-                    lists.forEach(l => {
-                        const item = document.createElement('div');
-                        item.className = 'agani-editor-dropdown-item';
-                        item.textContent = l.label;
-                        item.addEventListener('click', () => {
-                            this.executeCommand(l.command);
-                            menu.classList.remove('show');
-                        });
-                        menu.appendChild(item);
-                    });
-                } else if (name === 'align') {
-                    const alignments = [
-                        { label: 'Align Left', command: 'justifyLeft', icon: '⚋' },
-                        { label: 'Align Center', command: 'justifyCenter', icon: '⚌' },
-                        { label: 'Align Right', command: 'justifyRight', icon: '⚍' },
-                        { label: 'Justify', command: 'justifyFull', icon: '⚏' }
-                    ];
-
-                    alignments.forEach(a => {
-                        const item = document.createElement('div');
-                        item.className = 'agani-editor-dropdown-item';
-                        item.innerHTML = a.icon + ' ' + a.label;
-                        item.addEventListener('click', () => {
-                            this.executeCommand(a.command);
-                            menu.classList.remove('show');
-                        });
-                        menu.appendChild(item);
-                    });
-                } else if (name === 'fontfamily') {
-                    const fonts = [
-                        'Arial', 'Times New Roman', 'Courier New',
-                        'Georgia', 'Verdana', 'Comic Sans MS', 'Impact',
-                        'Trebuchet MS', 'Palatino', 'Garamond'
-                    ];
-
-                    fonts.forEach(font => {
-                        const item = document.createElement('div');
-                        item.className = 'agani-editor-dropdown-item';
-                        item.textContent = font;
-                        item.style.fontFamily = font;
-                        item.addEventListener('click', () => {
-                            this.executeCommand('fontName', font);
-                            menu.classList.remove('show');
-                        });
-                        menu.appendChild(item);
-                    });
-                } else if (name === 'fontsize') {
-                    const sizes = [
-                        { label: 'Very Small', value: '1' },
-                        { label: 'Small', value: '2' },
-                        { label: 'Normal', value: '3' },
-                        { label: 'Medium', value: '4' },
-                        { label: 'Large', value: '5' },
-                        { label: 'Very Large', value: '6' },
-                        { label: 'Huge', value: '7' }
-                    ];
-
-                    sizes.forEach(s => {
-                        const item = document.createElement('div');
-                        item.className = 'agani-editor-dropdown-item';
-                        item.textContent = s.label;
-                        item.addEventListener('click', () => {
-                            this.executeCommand('fontSize', s.value);
-                            menu.classList.remove('show');
-                        });
-                        menu.appendChild(item);
-                    });
-                }
-
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    menu.classList.toggle('show');
-                });
-
-                dropdown.appendChild(button);
-                dropdown.appendChild(menu);
-                this.toolbarContainer.appendChild(dropdown);
-            };
-
-            AganiEditor.prototype.createColorPicker = function(name, tool) {
-                const container = document.createElement('div');
-                container.className = 'agani-editor-color-picker';
-
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'agani-editor-btn';
-                button.innerHTML = tool.icon;
-                button.title = tool.title;
-
-                const colorInput = document.createElement('input');
-                colorInput.type = 'color';
-                colorInput.className = 'agani-editor-color-input';
-
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    colorInput.click();
-                });
-
-                colorInput.addEventListener('change', (e) => {
-                    const color = e.target.value;
-                    if (name === 'color') {
-                        this.executeCommand('foreColor', color);
-                    } else if (name === 'bgcolor') {
-                        this.executeCommand('backColor', color);
-                    }
-                });
-
-                container.appendChild(button);
-                container.appendChild(colorInput);
-                this.toolbarContainer.appendChild(container);
-            };
-
-            AganiEditor.prototype.createToggleButton = function(name, tool) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'agani-editor-btn';
-                button.innerHTML = tool.icon;
-                button.title = tool.title;
-
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.toggleCodeView();
-                    button.classList.toggle('active');
-                });
-
-                this.toolbarContainer.appendChild(button);
-            };
-
-            AganiEditor.prototype.insertTable = function() {
-                const rows = prompt('Jumlah baris:', '3');
-                const cols = prompt('Jumlah kolom:', '3');
-                
-                if (rows && cols) {
-                    let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%;">';
-                    
-                    for (let i = 0; i < parseInt(rows); i++) {
-                        tableHTML += '<tr>';
-                        for (let j = 0; j < parseInt(cols); j++) {
-                            tableHTML += '<td style="padding: 8px; border: 1px solid #ddd;">Cell</td>';
-                        }
-                        tableHTML += '</tr>';
-                    }
-                    
-                    tableHTML += '</table><p><br></p>';
-                    
-                    this.executeCommand('insertHTML', tableHTML);
-                }
-            };
-
-            AganiEditor.prototype.executeCommand = function(command, value) {
-                this.editorContent.focus();
-
-                if (command === 'createLink') {
-                    const url = prompt('Masukkan URL:');
-                    if (url) {
-                        document.execCommand(command, false, url);
-                    }
-                } else if (command === 'insertImage') {
-                    const url = prompt('Masukkan URL gambar:');
-                    if (url) {
-                        document.execCommand(command, false, url);
-                    }
-                } else if (command === 'insertHTML') {
-                    document.execCommand(command, false, value);
-                } else if (command === 'undo') {
-                    this.undo();
-                    return;
-                } else if (command === 'redo') {
-                    this.redo();
-                    return;
-                } else {
-                    document.execCommand(command, false, value);
-                }
-
-                this.updateOriginalElement();
-                this.saveHistory();
-            };
-
-            AganiEditor.prototype.saveHistory = function() {
-                const content = this.editorContent.innerHTML;
-                
-                if (this.historyStep < this.history.length - 1) {
-                    this.history = this.history.slice(0, this.historyStep + 1);
-                }
-                
-                if (this.history.length > 0 && this.history[this.history.length - 1] === content) {
-                    return;
-                }
-                
-                this.history.push(content);
-                this.historyStep = this.history.length - 1;
-                
-                if (this.history.length > 50) {
-                    this.history.shift();
-                    this.historyStep--;
-                }
-            };
-
-            AganiEditor.prototype.undo = function() {
-                if (this.historyStep > 0) {
-                    this.historyStep--;
-                    this.editorContent.innerHTML = this.history[this.historyStep];
-                    this.updateOriginalElement();
-                }
-            };
-
-            AganiEditor.prototype.redo = function() {
-                if (this.historyStep < this.history.length - 1) {
-                    this.historyStep++;
-                    this.editorContent.innerHTML = this.history[this.historyStep];
-                    this.updateOriginalElement();
-                }
-            };
-
-            AganiEditor.prototype.toggleCodeView = function() {
-                if (this.editorContent.style.display === 'none') {
-                    this.editorContent.innerHTML = this.codeView.value;
-                    this.editorContent.style.display = 'block';
-                    this.codeView.style.display = 'none';
-                } else {
-                    if (!this.codeView) {
-                        this.codeView = document.createElement('textarea');
-                        this.codeView.className = 'agani-editor-code';
-                        this.container.appendChild(this.codeView);
-                    }
-                    this.codeView.value = this.editorContent.innerHTML;
-                    this.codeView.style.minHeight = this.options.height + 'px';
-                    this.editorContent.style.display = 'none';
-                    this.codeView.style.display = 'block';
-                }
-            };
-
-            AganiEditor.prototype.attachEvents = function() {
-                let typingTimer;
-                const typingDelay = 500;
-
-                this.editorContent.addEventListener('input', () => {
-                    this.updateOriginalElement();
-                    
-                    clearTimeout(typingTimer);
-                    typingTimer = setTimeout(() => {
-                        this.saveHistory();
-                    }, typingDelay);
-                    
-                    if (this.options.onChange) {
-                        this.options.onChange(this.getContent());
-                    }
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.agani-editor-dropdown')) {
-                        document.querySelectorAll('.agani-editor-dropdown-menu').forEach(menu => {
-                            menu.classList.remove('show');
-                        });
-                    }
-                });
-
-                this.editorContent.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey || e.metaKey) {
-                        if (e.key === 'z' && !e.shiftKey) {
-                            e.preventDefault();
-                            this.undo();
-                        } else if (e.key === 'z' && e.shiftKey || e.key === 'y') {
-                            e.preventDefault();
-                            this.redo();
-                        }
-                    }
-                });
-            };
-
-            AganiEditor.prototype.updateOriginalElement = function() {
-                this.element.value = this.editorContent.innerHTML;
-            };
-
-            AganiEditor.prototype.hideOriginalElement = function() {
-                this.element.style.display = 'none';
-            };
-
-            AganiEditor.prototype.getContent = function() {
-                return this.editorContent.innerHTML;
-            };
-
-            AganiEditor.prototype.setContent = function(html) {
-                this.editorContent.innerHTML = html;
-                this.updateOriginalElement();
-                this.saveHistory();
-            };
-
-            AganiEditor.prototype.clear = function() {
-                this.editorContent.innerHTML = '';
-                this.updateOriginalElement();
-                this.saveHistory();
-            };
-
-            AganiEditor.prototype.destroy = function() {
-                this.element.style.display = 'block';
-                this.container.remove();
-            };
-
-            window.AganiEditor = AganiEditor;
-
-        })(window);
-
         // Initialize editor
         const editor = new AganiEditor('#editor1', {
             height: 500,
-            placeholder: 'Coba semua fitur baru: Undo/Redo, Table, Subscript/Superscript, dan banyak lagi!',
+            placeholder: 'Coba semua fitur baru: Undo/Redo, Table, Subscript/Superscript, dan banyak lagi! Select text untuk melihat indikator aktif pada toolbar.',
+            theme: 'light',
             onChange: function(content) {
                 console.log('Content changed');
             }
@@ -977,34 +202,46 @@
             const content = editor.getContent();
             document.getElementById('output').innerHTML = 
                 '<strong style="color: #667eea;">📋 HTML Output:</strong><br><br>' + 
-                '<pre style="background: white; padding: 15px; border-radius: 4px; overflow-x: auto;">' + 
+                '<pre style="background: white; padding: 15px; border-radius: 4px; overflow-x: auto; font-size: 12px;">' + 
                 escapeHtml(content) + 
                 '</pre>';
         }
         
         function setContent() {
             const sampleContent = `
-                <h1>Welcome to AganiEditor v2.1.0! 🎉</h1>
-                <p>This is a <strong>powerful</strong> and <em>lightweight</em> WYSIWYG editor.</p>
+                <h1>Welcome to AganiEditor v2.1.2! 🎉</h1>
+                <p>This is a <strong>powerful</strong> and <em>lightweight</em> WYSIWYG editor with <u>fixed cursor position</u>!</p>
                 
-                <h2>New Features:</h2>
+                <h2>✅ Bug Fixes:</h2>
                 <ul>
-                    <li>Undo/Redo functionality</li>
-                    <li>Subscript (H<sub>2</sub>O) and Superscript (E=mc<sup>2</sup>)</li>
-                    <li>Table insertion support</li>
-                    <li>Horizontal rules</li>
-                    <li>Clear formatting option</li>
+                    <li>Cursor tidak loncat ke awal saat klik toolbar</li>
+                    <li>Indikator status aktif pada tombol (Bold, Italic, dll)</li>
+                    <li>Font size dan font family sekarang bekerja dengan baik</li>
+                    <li>Insert link dan image sudah diperbaiki</li>
                 </ul>
                 
                 <hr>
                 
-                <h3>Try these features:</h3>
+                <h2>🆕 New Features:</h2>
                 <ol>
-                    <li>Select text and click <span style="background-color: #ffeb3b;">background color</span></li>
-                    <li>Change <span style="color: #f44336;">text colors</span></li>
+                    <li>Undo/Redo functionality (50 steps)</li>
+                    <li>Subscript: H<sub>2</sub>O, CO<sub>2</sub></li>
+                    <li>Superscript: E=mc<sup>2</sup>, x<sup>3</sup></li>
+                    <li>Table insertion support</li>
+                    <li>Horizontal rules</li>
+                    <li>Clear formatting option</li>
+                </ol>
+                
+                <hr>
+                
+                <h3>💡 Tips:</h3>
+                <ul>
+                    <li>Select text first, then click <span style="background-color: #ffeb3b;">background color</span></li>
+                    <li>Change <span style="color: #f44336;">text colors</span> easily</li>
                     <li>Add <a href="https://example.com">hyperlinks</a></li>
                     <li>Insert images and tables</li>
-                </ol>
+                    <li>Use keyboard shortcuts for faster editing!</li>
+                </ul>
                 
                 <p style="text-align: center;"><strong>Have fun editing! ✨</strong></p>
             `;
@@ -1015,7 +252,7 @@
             if (confirm('Are you sure you want to clear all content?')) {
                 editor.clear();
                 document.getElementById('output').innerHTML = 
-                    '<p style="color: #999;">Content cleared! ✓</p>';
+                    '<p style="color: #999;">✓ Content cleared!</p>';
             }
         }
         
@@ -1026,6 +263,16 @@
                         <th style="padding: 10px; background: #667eea; color: white; border: 1px solid #667eea;">Feature</th>
                         <th style="padding: 10px; background: #667eea; color: white; border: 1px solid #667eea;">Description</th>
                         <th style="padding: 10px; background: #667eea; color: white; border: 1px solid #667eea;">Status</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Cursor Fix</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Cursor tidak loncat</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">✓ Done</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Active State</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Indikator tombol aktif</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">✓ Done</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ddd;">Undo/Redo</td>

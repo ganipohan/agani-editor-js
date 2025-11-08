@@ -1,6 +1,6 @@
 /**
- * AganiEditor Styles - Enhanced
- * @version 2.1.0
+ * AganiEditor Styles - Enhanced v2.3.0
+ * Dengan fitur Font Active, Custom Font Size, dan Reset Color
  */
 
 /* Container */
@@ -20,7 +20,9 @@
 /* Color Picker */
 .agani-editor-color-picker {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .agani-editor-color-input {
@@ -28,6 +30,11 @@
     opacity: 0;
     width: 0;
     height: 0;
+}
+
+.agani-editor-reset-color-btn {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
 }
 
 /* Toolbar */
@@ -132,12 +139,18 @@
 .agani-editor-dropdown-item {
     padding: 10px 15px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     color: #333;
 }
 
 .agani-editor-dropdown-item:hover {
     background: #f8f9fa;
+}
+
+.agani-editor-dropdown-item.active {
+    background: #667eea;
+    color: white;
+    font-weight: 600;
 }
 
 .agani-editor-container[data-theme="dark"] .agani-editor-dropdown-item {
@@ -146,6 +159,85 @@
 
 .agani-editor-container[data-theme="dark"] .agani-editor-dropdown-item:hover {
     background: #3d3d3d;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-dropdown-item.active {
+    background: #667eea;
+    color: white;
+}
+
+/* Dropdown Separator */
+.agani-editor-dropdown-separator {
+    height: 1px;
+    background: #ddd;
+    margin: 5px 0;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-dropdown-separator {
+    background: #555;
+}
+
+/* Custom Size Container */
+.agani-editor-custom-size-container {
+    padding: 10px 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-custom-size-container {
+    border-top-color: #555;
+}
+
+.agani-editor-custom-size-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-custom-size-label {
+    color: #e0e0e0;
+}
+
+.agani-editor-custom-size-input {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.agani-editor-custom-size-input:focus {
+    border-color: #667eea;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-custom-size-input {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+.agani-editor-custom-size-btn {
+    padding: 6px 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.agani-editor-custom-size-btn:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+}
+
+.agani-editor-custom-size-btn:active {
+    transform: translateY(0);
 }
 
 /* Content Area */
@@ -358,6 +450,10 @@
     
     .agani-editor-dropdown-menu {
         max-height: 200px;
+    }
+    
+    .agani-editor-custom-size-container {
+        padding: 8px 12px;
     }
 }
 

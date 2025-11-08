@@ -1,6 +1,6 @@
 /**
  * AganiEditor - Advanced WYSIWYG text editor
- * @version 2.1.0
+ * @version 2.3.0 (Enhanced Features)
  * @author Abdul Gani Pohan
  */
 
@@ -36,6 +36,9 @@
 
         this.history = [];
         this.historyStep = -1;
+        this.savedRange = null;
+        this.currentFont = 'Arial';
+        this.currentFontSize = '3';
         this.init();
     }
 
@@ -45,6 +48,46 @@
         this.attachEvents();
         this.hideOriginalElement();
         this.saveHistory();
+    };
+
+    AganiEditor.prototype.saveSelection = function() {
+        if (window.getSelection) {
+            const sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                this.savedRange = sel.getRangeAt(0);
+            }
+        }
+    };
+
+    AganiEditor.prototype.restoreSelection = function() {
+        this.editorContent.focus();
+        if (this.savedRange) {
+            if (window.getSelection) {
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(this.savedRange);
+            }
+        }
+    };
+
+    AganiEditor.prototype.updateToolbarState = function() {
+        const buttons = this.toolbarContainer.querySelectorAll('.agani-editor-btn[data-command]');
+        
+        buttons.forEach(button => {
+            const command = button.getAttribute('data-command');
+            if (command) {
+                try {
+                    const isActive = document.queryCommandState(command);
+                    if (isActive) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                } catch(e) {
+                    // Some commands don't support queryCommandState
+                }
+            }
+        });
     };
 
     AganiEditor.prototype.createEditor = function() {
@@ -69,11 +112,11 @@
 
     AganiEditor.prototype.createToolbar = function() {
         const tools = {
-            'undo': { icon: '↶', title: 'Undo', command: 'undo' },
-            'redo': { icon: '↷', title: 'Redo', command: 'redo' },
-            'bold': { icon: '𝐁', title: 'Bold', command: 'bold' },
-            'italic': { icon: '𝐼', title: 'Italic', command: 'italic' },
-            'underline': { icon: '𝐔', title: 'Underline', command: 'underline' },
+            'undo': { icon: '↶', title: 'Undo (Ctrl+Z)', command: 'undo' },
+            'redo': { icon: '↷', title: 'Redo (Ctrl+Y)', command: 'redo' },
+            'bold': { icon: '𝐁', title: 'Bold (Ctrl+B)', command: 'bold' },
+            'italic': { icon: '𝐼', title: 'Italic (Ctrl+I)', command: 'italic' },
+            'underline': { icon: '𝐔', title: 'Underline (Ctrl+U)', command: 'underline' },
             'strikethrough': { icon: 'S̶', title: 'Strikethrough', command: 'strikeThrough' },
             'subscript': { icon: 'X₂', title: 'Subscript', command: 'subscript' },
             'superscript': { icon: 'X²', title: 'Superscript', command: 'superscript' },
@@ -86,8 +129,8 @@
             'list': { icon: '≡', title: 'List', type: 'dropdown' },
             'outdent': { icon: '←', title: 'Decrease Indent', command: 'outdent' },
             'indent': { icon: '→', title: 'Increase Indent', command: 'indent' },
-            'link': { icon: '🔗', title: 'Link', command: 'createLink' },
-            'image': { icon: '🖼️', title: 'Image', command: 'insertImage' },
+            'link': { icon: '🔗', title: 'Insert Link', command: 'createLink' },
+            'image': { icon: '🖼️', title: 'Insert Image', command: 'insertImage' },
             'table': { icon: '⊞', title: 'Insert Table', type: 'custom', action: 'insertTable' },
             'hr': { icon: '─', title: 'Horizontal Rule', command: 'insertHorizontalRule' },
             'removeformat': { icon: '✗', title: 'Clear Formatting', command: 'removeFormat' },
@@ -120,8 +163,13 @@
         button.title = tool.title;
         button.innerHTML = tool.icon;
         
+        button.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+        
         button.addEventListener('click', (e) => {
             e.preventDefault();
+            this.restoreSelection();
             this.executeCommand(tool.command);
         });
 
@@ -135,8 +183,13 @@
         button.title = tool.title;
         button.innerHTML = tool.icon;
         
+        button.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+        
         button.addEventListener('click', (e) => {
             e.preventDefault();
+            this.restoreSelection();
             if (tool.action === 'insertTable') {
                 this.insertTable();
             }
@@ -151,9 +204,10 @@
 
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'agani-editor-btn';
+        button.className = 'agani-editor-btn agani-editor-dropdown-btn';
         button.innerHTML = tool.icon + ' ▾';
         button.title = tool.title;
+        button.setAttribute('data-dropdown-type', name);
 
         const menu = document.createElement('div');
         menu.className = 'agani-editor-dropdown-menu';
@@ -173,8 +227,13 @@
                 const item = document.createElement('div');
                 item.className = 'agani-editor-dropdown-item';
                 item.textContent = h.label;
-                item.addEventListener('click', () => {
-                    this.executeCommand('formatBlock', h.tag);
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                });
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.restoreSelection();
+                    this.executeCommand('formatBlock', '<' + h.tag + '>');
                     menu.classList.remove('show');
                 });
                 menu.appendChild(item);
@@ -189,7 +248,12 @@
                 const item = document.createElement('div');
                 item.className = 'agani-editor-dropdown-item';
                 item.textContent = l.label;
-                item.addEventListener('click', () => {
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                });
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.restoreSelection();
                     this.executeCommand(l.command);
                     menu.classList.remove('show');
                 });
@@ -207,7 +271,12 @@
                 const item = document.createElement('div');
                 item.className = 'agani-editor-dropdown-item';
                 item.innerHTML = a.icon + ' ' + a.label;
-                item.addEventListener('click', () => {
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                });
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.restoreSelection();
                     this.executeCommand(a.command);
                     menu.classList.remove('show');
                 });
@@ -223,9 +292,27 @@
             fonts.forEach(font => {
                 const item = document.createElement('div');
                 item.className = 'agani-editor-dropdown-item';
+                item.setAttribute('data-font', font);
                 item.textContent = font;
                 item.style.fontFamily = font;
-                item.addEventListener('click', () => {
+                
+                if (font === this.currentFont) {
+                    item.classList.add('active');
+                }
+                
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                });
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Remove active class dari semua font items
+                    menu.querySelectorAll('.agani-editor-dropdown-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    // Tambah active class ke item yang diklik
+                    item.classList.add('active');
+                    this.currentFont = font;
+                    this.restoreSelection();
                     this.executeCommand('fontName', font);
                     menu.classList.remove('show');
                 });
@@ -233,29 +320,94 @@
             });
         } else if (name === 'fontsize') {
             const sizes = [
-                { label: 'Very Small', value: '1' },
-                { label: 'Small', value: '2' },
-                { label: 'Normal', value: '3' },
-                { label: 'Medium', value: '4' },
-                { label: 'Large', value: '5' },
-                { label: 'Very Large', value: '6' },
-                { label: 'Huge', value: '7' }
+                { label: 'Very Small (8pt)', value: '1' },
+                { label: 'Small (10pt)', value: '2' },
+                { label: 'Normal (12pt)', value: '3' },
+                { label: 'Medium (14pt)', value: '4' },
+                { label: 'Large (18pt)', value: '5' },
+                { label: 'Very Large (24pt)', value: '6' },
+                { label: 'Huge (32pt)', value: '7' }
             ];
 
             sizes.forEach(s => {
                 const item = document.createElement('div');
                 item.className = 'agani-editor-dropdown-item';
                 item.textContent = s.label;
-                item.addEventListener('click', () => {
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                });
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.restoreSelection();
                     this.executeCommand('fontSize', s.value);
                     menu.classList.remove('show');
                 });
                 menu.appendChild(item);
             });
+
+            // Tambah separator
+            const separator = document.createElement('div');
+            separator.className = 'agani-editor-dropdown-separator';
+            menu.appendChild(separator);
+
+            // Input custom size
+            const customContainer = document.createElement('div');
+            customContainer.className = 'agani-editor-custom-size-container';
+
+            const label = document.createElement('label');
+            label.textContent = 'Custom (px):';
+            label.className = 'agani-editor-custom-size-label';
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'agani-editor-custom-size-input';
+            input.placeholder = '16';
+            input.min = '8';
+            input.max = '200';
+
+            const applyBtn = document.createElement('button');
+            applyBtn.type = 'button';
+            applyBtn.className = 'agani-editor-custom-size-btn';
+            applyBtn.textContent = 'Apply';
+
+            applyBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const size = input.value;
+                if (size && parseInt(size) > 0) {
+                    this.restoreSelection();
+                    this.editorContent.focus();
+                    if (window.getSelection().toString()) {
+                        document.execCommand('fontSize', false, '7');
+                        const spans = this.editorContent.querySelectorAll('span[style*="font-size"]');
+                        spans.forEach(span => {
+                            span.style.fontSize = size + 'px';
+                        });
+                    }
+                    menu.classList.remove('show');
+                }
+            });
+
+            customContainer.appendChild(label);
+            customContainer.appendChild(input);
+            customContainer.appendChild(applyBtn);
+            menu.appendChild(customContainer);
         }
 
+        button.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+        
         button.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            
+            // Close other dropdowns
+            document.querySelectorAll('.agani-editor-dropdown-menu').forEach(m => {
+                if (m !== menu) {
+                    m.classList.remove('show');
+                }
+            });
+            
             menu.classList.toggle('show');
         });
 
@@ -278,22 +430,56 @@
         colorInput.type = 'color';
         colorInput.className = 'agani-editor-color-input';
 
+        const resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.className = 'agani-editor-btn agani-editor-reset-color-btn';
+        resetBtn.title = name === 'color' ? 'Reset Text Color' : 'Reset Background Color';
+        resetBtn.innerHTML = '↻';
+
+        button.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+        
         button.addEventListener('click', (e) => {
             e.preventDefault();
             colorInput.click();
         });
 
+        resetBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
+
+        resetBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.restoreSelection();
+            if (name === 'color') {
+                // Reset text color ke hitam
+                if (window.getSelection().toString()) {
+                    document.execCommand('foreColor', false, '#000000');
+                }
+            } else if (name === 'bgcolor') {
+                // Reset background color ke putih
+                if (window.getSelection().toString()) {
+                    document.execCommand('hiliteColor', false, '#FFFFFF');
+                }
+            }
+            this.updateOriginalElement();
+            this.saveHistory();
+        });
+
         colorInput.addEventListener('change', (e) => {
             const color = e.target.value;
+            this.restoreSelection();
             if (name === 'color') {
                 this.executeCommand('foreColor', color);
             } else if (name === 'bgcolor') {
-                this.executeCommand('backColor', color);
+                this.executeCommand('hiliteColor', color);
             }
         });
 
         container.appendChild(button);
         container.appendChild(colorInput);
+        container.appendChild(resetBtn);
         this.toolbarContainer.appendChild(container);
     };
 
@@ -303,6 +489,10 @@
         button.className = 'agani-editor-btn';
         button.innerHTML = tool.icon;
         button.title = tool.title;
+
+        button.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+        });
 
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -317,7 +507,7 @@
         const rows = prompt('Jumlah baris:', '3');
         const cols = prompt('Jumlah kolom:', '3');
         
-        if (rows && cols) {
+        if (rows && cols && parseInt(rows) > 0 && parseInt(cols) > 0) {
             let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%;">';
             
             for (let i = 0; i < parseInt(rows); i++) {
@@ -330,25 +520,76 @@
             
             tableHTML += '</table><p><br></p>';
             
-            this.executeCommand('insertHTML', tableHTML);
+            this.insertHTMLAtCursor(tableHTML);
         }
     };
 
-    AganiEditor.prototype.executeCommand = function(command, value) {
-        this.editorContent.focus();
+    AganiEditor.prototype.insertHTMLAtCursor = function(html) {
+        this.restoreSelection();
+        
+        if (document.queryCommandSupported('insertHTML')) {
+            document.execCommand('insertHTML', false, html);
+        } else {
+            const sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                
+                const el = document.createElement('div');
+                el.innerHTML = html;
+                const frag = document.createDocumentFragment();
+                let node, lastNode;
+                while ((node = el.firstChild)) {
+                    lastNode = frag.appendChild(node);
+                }
+                range.insertNode(frag);
+                
+                if (lastNode) {
+                    range = range.cloneRange();
+                    range.setStartAfter(lastNode);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
+        }
+        
+        this.saveSelection();
+        this.updateOriginalElement();
+        this.saveHistory();
+    };
 
+    AganiEditor.prototype.executeCommand = function(command, value) {
         if (command === 'createLink') {
-            const url = prompt('Masukkan URL:');
-            if (url) {
-                document.execCommand(command, false, url);
+            const selection = window.getSelection();
+            const selectedText = selection.toString();
+            
+            if (!selectedText) {
+                alert('Silakan pilih teks terlebih dahulu untuk dijadikan link!');
+                return;
+            }
+            
+            const url = prompt('Masukkan URL:', 'https://');
+            if (url && url !== 'https://' && url !== '') {
+                document.execCommand('createLink', false, url);
+                
+                setTimeout(() => {
+                    const links = this.editorContent.querySelectorAll('a');
+                    links.forEach(link => {
+                        if (!link.hasAttribute('target')) {
+                            link.setAttribute('target', '_blank');
+                            link.setAttribute('rel', 'noopener noreferrer');
+                        }
+                    });
+                }, 10);
             }
         } else if (command === 'insertImage') {
-            const url = prompt('Masukkan URL gambar:');
-            if (url) {
-                document.execCommand(command, false, url);
+            const url = prompt('Masukkan URL gambar:', 'https://');
+            if (url && url !== 'https://' && url !== '') {
+                const imgHTML = `<img src="${url}" style="max-width: 100%; height: auto; display: block; margin: 10px 0;" alt="Image">`;
+                this.insertHTMLAtCursor(imgHTML);
+                return;
             }
-        } else if (command === 'insertHTML') {
-            document.execCommand(command, false, value);
         } else if (command === 'undo') {
             this.undo();
             return;
@@ -359,6 +600,8 @@
             document.execCommand(command, false, value);
         }
 
+        this.saveSelection();
+        this.updateToolbarState();
         this.updateOriginalElement();
         this.saveHistory();
     };
@@ -366,12 +609,10 @@
     AganiEditor.prototype.saveHistory = function() {
         const content = this.editorContent.innerHTML;
         
-        // Remove future history if we're not at the end
         if (this.historyStep < this.history.length - 1) {
             this.history = this.history.slice(0, this.historyStep + 1);
         }
         
-        // Don't save if content hasn't changed
         if (this.history.length > 0 && this.history[this.history.length - 1] === content) {
             return;
         }
@@ -379,7 +620,6 @@
         this.history.push(content);
         this.historyStep = this.history.length - 1;
         
-        // Limit history to 50 steps
         if (this.history.length > 50) {
             this.history.shift();
             this.historyStep--;
@@ -391,6 +631,7 @@
             this.historyStep--;
             this.editorContent.innerHTML = this.history[this.historyStep];
             this.updateOriginalElement();
+            this.updateToolbarState();
         }
     };
 
@@ -399,6 +640,7 @@
             this.historyStep++;
             this.editorContent.innerHTML = this.history[this.historyStep];
             this.updateOriginalElement();
+            this.updateToolbarState();
         }
     };
 
@@ -407,6 +649,7 @@
             this.editorContent.innerHTML = this.codeView.value;
             this.editorContent.style.display = 'block';
             this.codeView.style.display = 'none';
+            this.saveHistory();
         } else {
             if (!this.codeView) {
                 this.codeView = document.createElement('textarea');
@@ -423,6 +666,21 @@
     AganiEditor.prototype.attachEvents = function() {
         let typingTimer;
         const typingDelay = 500;
+
+        this.editorContent.addEventListener('mouseup', () => {
+            this.saveSelection();
+            this.updateToolbarState();
+        });
+
+        this.editorContent.addEventListener('keyup', () => {
+            this.saveSelection();
+            this.updateToolbarState();
+        });
+
+        this.editorContent.addEventListener('focus', () => {
+            this.saveSelection();
+            this.updateToolbarState();
+        });
 
         this.editorContent.addEventListener('input', () => {
             this.updateOriginalElement();
@@ -445,15 +703,23 @@
             }
         });
 
-        // Keyboard shortcuts
         this.editorContent.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
                 if (e.key === 'z' && !e.shiftKey) {
                     e.preventDefault();
                     this.undo();
-                } else if (e.key === 'z' && e.shiftKey || e.key === 'y') {
+                } else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') {
                     e.preventDefault();
                     this.redo();
+                }
+            }
+        });
+
+        this.editorContent.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    window.open(e.target.href, '_blank');
                 }
             }
         });
