@@ -1,6 +1,6 @@
 /**
- * AganiEditor Styles
- * @version 1.0.0
+ * AganiEditor Styles - Enhanced
+ * @version 2.1.0
  */
 
 /* Container */
@@ -15,6 +15,19 @@
 .agani-editor-container[data-theme="dark"] {
     background: #1e1e1e;
     border-color: #333;
+}
+
+/* Color Picker */
+.agani-editor-color-picker {
+    position: relative;
+    display: inline-block;
+}
+
+.agani-editor-color-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 /* Toolbar */
@@ -42,11 +55,13 @@
     font-size: 14px;
     transition: all 0.2s;
     color: #333;
+    white-space: nowrap;
 }
 
 .agani-editor-btn:hover {
     background: #e9ecef;
     border-color: #adb5bd;
+    transform: translateY(-1px);
 }
 
 .agani-editor-btn:active,
@@ -54,6 +69,12 @@
     background: #667eea;
     color: white;
     border-color: #667eea;
+    transform: translateY(0);
+}
+
+.agani-editor-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .agani-editor-container[data-theme="dark"] .agani-editor-btn {
@@ -81,12 +102,26 @@
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     min-width: 150px;
+    max-height: 300px;
+    overflow-y: auto;
     z-index: 1000;
     display: none;
 }
 
 .agani-editor-dropdown-menu.show {
     display: block;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .agani-editor-container[data-theme="dark"] .agani-editor-dropdown-menu {
@@ -159,6 +194,24 @@
     font-weight: 600;
 }
 
+.agani-editor-content h4 {
+    font-size: 1em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+.agani-editor-content h5 {
+    font-size: 0.83em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+.agani-editor-content h6 {
+    font-size: 0.67em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
 .agani-editor-content p {
     margin-bottom: 1em;
 }
@@ -174,10 +227,64 @@
     text-decoration: underline;
 }
 
+.agani-editor-content a:hover {
+    color: #5568d3;
+}
+
 .agani-editor-content img {
     max-width: 100%;
     height: auto;
     border-radius: 4px;
+    margin: 10px 0;
+}
+
+.agani-editor-content hr {
+    border: none;
+    border-top: 2px solid #ddd;
+    margin: 20px 0;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-content hr {
+    border-top-color: #555;
+}
+
+/* Table Styles */
+.agani-editor-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+}
+
+.agani-editor-content table td,
+.agani-editor-content table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    min-width: 50px;
+}
+
+.agani-editor-content table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-content table td,
+.agani-editor-container[data-theme="dark"] .agani-editor-content table th {
+    border-color: #555;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-content table th {
+    background: #2d2d2d;
+}
+
+/* Subscript & Superscript */
+.agani-editor-content sub {
+    vertical-align: sub;
+    font-size: smaller;
+}
+
+.agani-editor-content sup {
+    vertical-align: super;
+    font-size: smaller;
 }
 
 /* Code View */
@@ -199,10 +306,44 @@
     color: #e0e0e0;
 }
 
+/* Scrollbar Styling */
+.agani-editor-content::-webkit-scrollbar,
+.agani-editor-dropdown-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.agani-editor-content::-webkit-scrollbar-track,
+.agani-editor-dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.agani-editor-content::-webkit-scrollbar-thumb,
+.agani-editor-dropdown-menu::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.agani-editor-content::-webkit-scrollbar-thumb:hover,
+.agani-editor-dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.agani-editor-container[data-theme="dark"] .agani-editor-content::-webkit-scrollbar-track,
+.agani-editor-container[data-theme="dark"] .agani-editor-dropdown-menu::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}
+
+/* Selection */
+.agani-editor-content ::selection {
+    background: #667eea;
+    color: white;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .agani-editor-toolbar {
         padding: 8px;
+        gap: 3px;
     }
     
     .agani-editor-btn {
@@ -213,5 +354,24 @@
     .agani-editor-content {
         padding: 12px;
         font-size: 14px;
+    }
+    
+    .agani-editor-dropdown-menu {
+        max-height: 200px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .agani-editor-toolbar {
+        display: none;
+    }
+    
+    .agani-editor-container {
+        border: none;
+    }
+    
+    .agani-editor-content {
+        padding: 0;
     }
 }

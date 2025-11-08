@@ -28,8 +28,7 @@
 npm install agani-editor-js 
 
 ### Option 2: CDN
- 
-<!-- CSS -->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/agani-editor-js@1.0.0/dist/agani-editor.min.css">
 
 <!-- JavaScript -->
@@ -163,33 +162,7 @@ function MyEditor() {
 }
 
 export default MyEditor;
-
-### Vue.js
-
-<template>
-    <textarea ref="editor"></textarea>
-</template>
-
-<script>
-    import AganiEditor from 'agani-editor-js';
-    import 'agani-editor-js/dist/agani-editor.min.css';
-
-    export default {
-        mounted() {
-            this.editorInstance = new AganiEditor(this.$refs.editor, {
-                height: 400,
-                onChange: (content) => {
-                    this.$emit('update', content);
-                }
-            });
-        },
-        beforeUnmount() {
-            if (this.editorInstance) {
-                this.editorInstance.destroy();
-            }
-        }
-    }
-</script>
+ 
 
 ### Laravel Blade
   
